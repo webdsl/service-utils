@@ -1,5 +1,8 @@
 module auth
 
+imports fetch
+imports src/entities
+
 imports src/services/utils
 imports src/email
 
@@ -36,6 +39,36 @@ service loginService(){
     return Err(res, "Invalid request");
   }
 }
+
+test testLoginService {
+  var d : WebDriver := getFirefoxDriver();
+
+  var hunter2 := User{ 
+		name := "hunter", 
+		email := "hunter2@testuser.com", 
+		password := ("hunter2" as Secret).digest()
+	};
+  hunter2.save();
+
+  var body := JSONObject();
+  body.put("email", hunter2.email);
+  body.put("password", "hunter2");
+
+  var options := FetchOptions()
+    .set("method", "POST")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  var res := fetch(d, "/mainappfile/api/currentUser", options);
+  
+  assert(res.getState() == "fulfilled", "Expected the request to succeed");
+  assert(res.getStatus() == 200, "Expected the status to be ok");
+
+  var resBody := JSONObject(res.getBody());
+  assert(resBody.getJSONArray("errors").length() == 0);
+  assert(resBody.getJSONObject("data").getString("id") == hunter2.email);
+}
+
 
 service logoutService(){
   var res := Response();
@@ -109,6 +142,17 @@ service currentUserService(){
     return Err(res, "Invalid request");
   }
 }
+
+
+//test test_login {
+//  var d : WebDriver := HtmlUnitDriver();
+//
+//  d.get(navigate(currentUserService()));
+//
+//  log(d.getPageSource());
+//
+//  assert(!d.getPageSource().contains("404"), "No 404");
+//}
 
 access control rules
   rule page loginService(){ true }

@@ -24,16 +24,16 @@ function dateRange(start: Date, end: Date): [Date] {
 	return dates;
 }
 
-test dateHelpersTest {
-	var t : Date := today();
-	var n : Int := 420; // something >365 to test year boundary as well
-	for(i:Int from 0 to n){
-		// should be end not start i guess
-		var start : Date := t.addDays(i);
-		assert(daysBetween(t, start) == i+1, "daysBetween");
-		assert(daysBetween(start, t) == i+1, "daysBetween");
-		var range : [Date] := dateRange(t, start);
-		assert(range.get(0) == t);
-		assert(range.get(range.length - 1) == start);
-	}
-}
+//test dateHelpersTest {
+//	var t : Date := today();
+//	var n : Int := 420; // something >365 to test year boundary as well
+//	for(i:Int from 0 to n){
+//		// should be end not start i guess
+//		var start : Date := t.addDays(i);
+//		assert(daysBetween(t, start) == i+1, "daysBetween");
+//		assert(daysBetween(start, t) == i+1, "daysBetween");
+//		var range : [Date] := dateRange(t, start);
+//		assert(range.get(0) == t);
+//		assert(range.get(range.length - 1) == start);
+//	}
+//}

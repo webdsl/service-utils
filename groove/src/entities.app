@@ -8,4 +8,3 @@ imports src/entities/role
 imports src/entities/streakinfo
 imports src/entities/token
 imports src/entities/user
-imports src/entities/habitinfo

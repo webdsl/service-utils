@@ -28,6 +28,7 @@ webdsl check-web
     - [x] Make runnable
     - [ ] Does the application logic stay?
   - [ ] Add GET,DELETE endpoints
+    - [ ] Search endpoint?
   - [ ] Update Dockerfile(s)
 - [ ] Tests
   - [ ] Fix current test:  ERROR JDBCExceptionReporter:234 - Referential integrity constraint violation

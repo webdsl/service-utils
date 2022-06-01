@@ -5,7 +5,6 @@ entity Color {
 	premium: Bool (default = false, not null)
 }
 
-// premium features lol
 var red:     Color := Color{ value := "#ef4444" }
 var orange:  Color := Color{ value := "#f97316" }
 var amber:   Color := Color{ value := "#f59e0b", premium := true }

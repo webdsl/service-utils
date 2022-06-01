@@ -1,3 +1,5 @@
 module auth
 
-imports src/auth/auth
+imports src/entities
+
+principal is User with credentials email, password
