@@ -6,6 +6,158 @@ imports src/services/completion // completions, completion
 imports src/services/color      // colors
 imports src/services/user       // users, user
 
+service testService(param: String){
+  var res := JSONObject();
+  log(getHttpMethod());
+  res.put("method", getHttpMethod());
+  res.put("param", param);
+  res.put("body", readRequestBody());
+  return res;
+}
+
+test testServiceMethods {
+  var d : WebDriver := getFirefoxDriver();
+
+  // GET
+  var options := FetchOptions()
+    .set("method", "GET")
+    .addHeader("Content-Type", "application/json");
+
+  var res := fetch(d, "/mainappfile/api/test", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  var data := JSONObject(res.getBody());
+  assert(data.getString("method") == "GET");
+  assert(data.getString("param") == "");
+  assert(data.getString("body") == "");
+
+  options := FetchOptions()
+    .set("method", "GET")
+    .addHeader("Content-Type", "application/json");
+
+  res := fetch(d, "/mainappfile/api/test/somevalue", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "GET");
+  assert(data.getString("param") == "somevalue");
+  assert(data.getString("body") == "");
+
+  // TODO either PUT is just GET or fetch sends GET?
+  // PUT
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json");
+
+  res := fetch(d, "/mainappfile/api/test", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "");
+  assert(data.getString("body") == "");
+
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json");
+
+  res := fetch(d, "/mainappfile/api/test/somevalue", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "somevalue");
+  assert(data.getString("body") == "");
+
+  var body := JSONObject();
+  body.put("hello", "world");
+
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  res := fetch(d, "/mainappfile/api/test", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "");
+  assert(data.getString("body").trim() == body.toString().trim());
+
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  res := fetch(d, "/mainappfile/api/test/somevalue", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "somevalue");
+  assert(data.getString("body") == body.toString());
+
+  // POST
+  options := FetchOptions()
+    .set("method", "POST")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  res := fetch(d, "/mainappfile/api/test", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "POST");
+  assert(data.getString("param") == "");
+  assert(data.getString("body").trim() == body.toString().trim());
+}
+
+service testReturnService(condition1: String, condition2: String){
+  var res := "~condition1/~condition2/";
+  if( condition1 == "true" ){
+    if( condition2 == "true"){
+      return res + "1+2";
+    }
+    return res + "1";
+  }
+  if( condition2 == "true"){
+    return res + "2";
+  }
+  return res + "0";
+}
+
+test testServiceMethods {
+  var d : WebDriver := getFirefoxDriver();
+
+  // no arg
+  assert(fetch(d, "/mainappfile/api/testReturn").getBody() == "//0");
+
+  // one arg
+  assert(fetch(d, "/mainappfile/api/testReturn/false").getBody() == "false//0");
+  assert(fetch(d, "/mainappfile/api/testReturn/true").getBody() == "true//1");
+
+  // both args
+  assert(fetch(d, "/mainappfile/api/testReturn/false/false").getBody() == "false/false/0");
+  assert(fetch(d, "/mainappfile/api/testReturn/false/true").getBody() == "false/true/2");
+  assert(fetch(d, "/mainappfile/api/testReturn/true/false").getBody() == "true/false/1");
+  assert(fetch(d, "/mainappfile/api/testReturn/true/true").getBody() == "true/true/1+2");
+}
+
 /// Reroutes API requests to the corresponding service.
 ///
 /// Rewrites `api/{endpoint}` URLs to the `{endpoint}Service` service.
@@ -27,3 +179,7 @@ routing {
     }
   }
 }
+
+access control rules
+  rule page testService(param: String){ true }
+  rule page testReturnService(condition1: String, condition2: String){ true }

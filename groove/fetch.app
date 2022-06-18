@@ -52,10 +52,6 @@ page fetch {
     <script type="text/javascript" src="https://polyfill.io/v3/polyfill.min.js?version=3.111.0&features=fetch%2Ces5"></script>
   }
   <script type="text/javascript">
-    function fmt(){
-      const options = document.getElementById('options');
-      options.value = JSON.stringify(JSON.parse(options.value || "null"));
-    }
     function handleSubmit(e){
       e.preventDefault(); // no redirect
       const url = document.getElementById('url').value;
@@ -88,7 +84,7 @@ page fetch {
     </label>
 
     <label>"Options"
-      <textarea id="options" onchange="fmt()"></textarea>
+      <textarea id="options"></textarea>
     </label>
 
     <button type="submit" id="send">"Send"</button>
@@ -131,13 +127,11 @@ function fetch(d: WebDriver, url: String, options: FetchOptions): FetchResult {
   d.findElement(SelectBy.id("url")).sendKeys(url);
   // set options
   d.findElement(SelectBy.id("options")).sendKeys(options.toString());
-  // wait for onchange event
-  sleep(1000);
   // execute request
   d.findElement(SelectBy.id("send")).submit();
 
   // wait until the promise is fulfilled/rejected
-  awaitFetch(d);
+  awaitFetch(d, 10000);
 
   var res := FetchResult(
     d.findElement(SelectBy.id("status")).getText().parseInt(),
@@ -148,12 +142,12 @@ function fetch(d: WebDriver, url: String, options: FetchOptions): FetchResult {
   return res;
 }
 
-function awaitFetch(d: WebDriver){
+function awaitFetch(d: WebDriver, maxWait: Int){
   sleep(1000);
   var state := d.findElement(SelectBy.id("state")).getText();
   if(state != "fulfilled" && state != "rejected") {
     log(".");
-    awaitFetch(d);
+    awaitFetch(d, maxWait - 1000);
     return;
   }
 }

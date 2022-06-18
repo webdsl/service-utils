@@ -40,18 +40,36 @@ service loginService(){
   }
 }
 
-test testLoginService {
+test testLoginServiceValidCredentials {
   var d : WebDriver := getFirefoxDriver();
 
-  var hunter2 := User{ 
-		name := "hunter", 
-		email := "hunter2@testuser.com", 
-		password := ("hunter2" as Secret).digest()
-	};
-  hunter2.save();
+  var body := JSONObject();
+  body.put("email", "admin@app.com");
+  body.put("password", "123");
+
+  var options := FetchOptions()
+    .set("method", "POST")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  var res := fetch(d, "/mainappfile/api/login", options);
+
+  log(options.toString());
+  log(res.toString());
+  
+  assert(res.getState() == "fulfilled", "Expected the request to succeed");
+  assert(res.getStatus() == 200, "Expected the status to be ok");
+
+  var resBody := JSONObject(res.getBody());
+  assert(!resBody.has("error") || resBody.getJSONArray("error").length() == 0);
+  assert(resBody.getJSONObject("data").getString("id") == "admin@app.com");
+}
+
+test testLoginServiceInvalidCredentials {
+  var d : WebDriver := getFirefoxDriver();
 
   var body := JSONObject();
-  body.put("email", hunter2.email);
+  body.put("email", "admin@app.com");
   body.put("password", "hunter2");
 
   var options := FetchOptions()
@@ -59,14 +77,17 @@ test testLoginService {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  var res := fetch(d, "/mainappfile/api/currentUser", options);
+  var res := fetch(d, "/mainappfile/api/login", options);
+
+  log(options.toString());
+  log(res.toString());
   
   assert(res.getState() == "fulfilled", "Expected the request to succeed");
   assert(res.getStatus() == 200, "Expected the status to be ok");
 
   var resBody := JSONObject(res.getBody());
-  assert(resBody.getJSONArray("errors").length() == 0);
-  assert(resBody.getJSONObject("data").getString("id") == hunter2.email);
+  assert(resBody.has("error") && resBody.getJSONArray("error").length() > 0);
+  assert(!resBody.has("data") || !resBody.getJSONObject("data").has("id"));
 }
 
 

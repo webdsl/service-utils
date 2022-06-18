@@ -16,7 +16,12 @@ public class FetchOptions {
     }
 
     public FetchOptions set(String key, String value){
-        this.options.put(key, value);
+        if (key.equals("body")){
+            // make sure this is a string, not a JSON object...
+            this.options.put(key, value.replace("\"", "\\\"").replace("\n", "\\n"));
+        } else {
+            this.options.put(key, value);
+        }
         return this;
     }
 
