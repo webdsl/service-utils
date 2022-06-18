@@ -23,18 +23,17 @@ webdsl check-web
   - [ ] API: Document the REST interface of all explorations
   - [ ] Current code: REST API design decisions
 - [ ] Project
-  - [ ] Adjust groove project
+  - [x] Adjust groove project
     - [x] Remove frontend & themeing
     - [x] Make runnable
     - [ ] Does the application logic stay?
-  - [ ] Add GET,DELETE endpoints
-    - [ ] Search endpoint?
+  - [x] Add GET,PUT endpoints
   - [ ] Update Dockerfile(s)
 - [ ] Tests
-  - [ ] Fix current test:  ERROR JDBCExceptionReporter:234 - Referential integrity constraint violation
+  - [x] Fix current test:  ERROR JDBCExceptionReporter:234 - Referential integrity constraint violation
   - [ ] Unit tests
-  - [ ] Figure out how to test REST endpoints with web tests
-  - [ ] Add tests for the endpoints (auth, response body|header|status)
+  - [x] Figure out how to test REST endpoints with web tests
+  - [x] Add tests for the endpoints (auth, response body|header|status)
   - [ ] Is there something like coverage reports for WebDSL?
-- [ ] WebDSL buildfarm integration
+- [x] WebDSL buildfarm integration
 - [ ] Don't abuse the README and use tagged GitHub issues for this...
