@@ -47,8 +47,25 @@ test testServiceMethods {
   assert(data.getString("param") == "somevalue");
   assert(data.getString("body") == "");
 
-  // TODO either PUT is just GET or fetch sends GET?
   // PUT
+  var body := JSONObject();
+  body.put("hello", "world");
+
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  res := fetch(d, "/mainappfile/api/test/42", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "42");
+  assert(data.getString("body").trim() == body.toString().trim());
+
   options := FetchOptions()
     .set("method", "PUT")
     .addHeader("Content-Type", "application/json");
@@ -76,9 +93,6 @@ test testServiceMethods {
   assert(data.getString("method") == "PUT");
   assert(data.getString("param") == "somevalue");
   assert(data.getString("body") == "");
-
-  var body := JSONObject();
-  body.put("hello", "world");
 
   options := FetchOptions()
     .set("method", "PUT")
@@ -108,7 +122,7 @@ test testServiceMethods {
   data := JSONObject(res.getBody());
   assert(data.getString("method") == "PUT");
   assert(data.getString("param") == "somevalue");
-  assert(data.getString("body") == body.toString());
+  assert(data.getString("body").trim() == body.toString().trim());
 
   // POST
   options := FetchOptions()
