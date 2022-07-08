@@ -15,6 +15,70 @@ service testService(param: String){
   return res;
 }
 
+test testNocacheServices {
+  var d : WebDriver := getFirefoxDriver();
+
+  var options := FetchOptions()
+    .set("method", "GET")
+    .addHeader("Content-Type", "application/json");
+
+  var res := fetch(d, "/mainappfile/api/test/1", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  var data := JSONObject(res.getBody());
+  assert(data.getString("method") == "GET");
+  assert(data.getString("param") == "1");
+  assert(data.getString("body") == "");
+
+  var body := JSONObject();
+  body.put("hello", "world");
+
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json")
+    .set("body", body.toString());
+
+  res := fetch(d, "/mainappfile/api/test/1?nocache", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "1");
+  assert(data.getString("body").trim() == body.toString().trim());
+
+  options := FetchOptions()
+    .set("method", "PUT")
+    .addHeader("Content-Type", "application/json");
+
+  res := fetch(d, "/mainappfile/api/test/2", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "PUT");
+  assert(data.getString("param") == "2");
+  assert(data.getString("body") == "");
+
+  options := FetchOptions()
+    .set("method", "GET")
+    .addHeader("Content-Type", "application/json");
+
+  res := fetch(d, "/mainappfile/api/test/2?nocache", options);
+
+  assert(res.getState() == "fulfilled");
+  assert(res.getStatus() == 200);
+
+  data := JSONObject(res.getBody());
+  assert(data.getString("method") == "GET");
+  assert(data.getString("param") == "2");
+  assert(data.getString("body") == "");
+}
+
 test testServiceMethods {
   var d : WebDriver := getFirefoxDriver();
 
