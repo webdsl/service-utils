@@ -134,7 +134,7 @@ test testServiceMethods {
     .set("method", "PUT")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test", options);
+  res := fetch(d, "/mainappfile/api/test?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -148,7 +148,7 @@ test testServiceMethods {
     .set("method", "PUT")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test/somevalue", options);
+  res := fetch(d, "/mainappfile/api/test/somevalue?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -163,7 +163,7 @@ test testServiceMethods {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test", options);
+  res := fetch(d, "/mainappfile/api/test?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -178,7 +178,7 @@ test testServiceMethods {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test/somevalue", options);
+  res := fetch(d, "/mainappfile/api/test/somevalue?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
