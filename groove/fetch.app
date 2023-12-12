@@ -114,55 +114,54 @@ native class nativejava.FetchResult as FetchResult {
   toString(): String
 }
 
+
+request var driver: WebDriver := getDriver()
+
 /// Wraps the browser Fetch API, useful for testing services with request bodies.
 /// See https://developer.mozilla.org/en-US/docs/Web/API/fetch#parameters
 /// 
 /// URLs beginning with "/" are prefixed with the project base URL
-function fetch(d: WebDriver, url: String): FetchResult {
-  return fetch(d, url, FetchOptions());
+function fetch(url: String): FetchResult {
+  return fetch(url, FetchOptions());
 }
-function fetch(d: WebDriver, url: String, options: FetchOptions): FetchResult {
-  d.get(navigate(fetch()));
+function fetch(url: String, options: FetchOptions): FetchResult {
+  driver.get(navigate(fetch()));
   // set url
-  d.findElement(SelectBy.id("url")).sendKeys(url);
+  driver.findElement(SelectBy.id("url")).sendKeys(url);
   // set options
-  d.findElement(SelectBy.id("options")).sendKeys(options.toString());
+  driver.findElement(SelectBy.id("options")).sendKeys(options.toString());
   // execute request
-  d.findElement(SelectBy.id("send")).submit();
+  driver.findElement(SelectBy.id("send")).submit();
 
   // wait until the promise is fulfilled/rejected
-  awaitFetch(d, 10000);
+  awaitFetch(10000);
 
   var res := FetchResult(
-    d.findElement(SelectBy.id("status")).getText().parseInt(),
-    d.findElement(SelectBy.id("state")).getText(),
-    d.findElement(SelectBy.id("response")).getText()
+    driver.findElement(SelectBy.id("status")).getText().parseInt(),
+    driver.findElement(SelectBy.id("state")).getText(),
+    driver.findElement(SelectBy.id("response")).getText()
   );
 
   return res;
 }
 
-function awaitFetch(d: WebDriver, maxWait: Int){
+function awaitFetch(maxWait: Int){
   sleep(1000);
-  var state := d.findElement(SelectBy.id("state")).getText();
+  var state := driver.findElement(SelectBy.id("state")).getText();
   if(state != "fulfilled" && state != "rejected") {
     log(".");
-    awaitFetch(d, maxWait - 1000);
+    awaitFetch(maxWait - 1000);
     return;
   }
 }
 
 test test_fetch {
-
-  //var d : WebDriver := HtmlUnitDriver();
-  var d : WebDriver := getFirefoxDriver();
-
   var options := FetchOptions()
     .set("method", "POST")
     .addHeader("Content-Type", "application/json")
     .set("body", "{}");
 
-  var res := fetch(d, "/mainappfile/api/currentUser", options);
+  var res := fetch("/mainappfile/api/currentUser", options);
 
   log(res.toString());
 

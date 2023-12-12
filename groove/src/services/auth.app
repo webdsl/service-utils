@@ -41,8 +41,6 @@ service loginService(){
 }
 
 test testLoginServiceValidCredentials {
-  var d : WebDriver := getFirefoxDriver();
-
   var body := JSONObject();
   body.put("email", "admin@app.com");
   body.put("password", "123");
@@ -52,11 +50,11 @@ test testLoginServiceValidCredentials {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  var res := fetch(d, "/mainappfile/api/login", options);
+  var res := fetch("/mainappfile/api/login", options);
 
   log(options.toString());
   log(res.toString());
-  
+
   assert(res.getState() == "fulfilled", "Expected the request to succeed");
   assert(res.getStatus() == 200, "Expected the status to be ok");
 
@@ -66,8 +64,6 @@ test testLoginServiceValidCredentials {
 }
 
 test testLoginServiceInvalidCredentials {
-  var d : WebDriver := getFirefoxDriver();
-
   var body := JSONObject();
   body.put("email", "admin@app.com");
   body.put("password", "hunter2");
@@ -77,11 +73,11 @@ test testLoginServiceInvalidCredentials {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  var res := fetch(d, "/mainappfile/api/login", options);
+  var res := fetch("/mainappfile/api/login", options);
 
   log(options.toString());
   log(res.toString());
-  
+
   assert(res.getState() == "fulfilled", "Expected the request to succeed");
   assert(res.getStatus() == 200, "Expected the status to be ok");
 

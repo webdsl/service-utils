@@ -16,13 +16,11 @@ service testService(param: String){
 }
 
 test testNocacheServices {
-  var d : WebDriver := getFirefoxDriver();
-
   var options := FetchOptions()
     .set("method", "GET")
     .addHeader("Content-Type", "application/json");
 
-  var res := fetch(d, "/mainappfile/api/test/1", options);
+  var res := fetch("/mainappfile/api/test/1", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -40,7 +38,7 @@ test testNocacheServices {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test/1?nocache", options);
+  res := fetch("/mainappfile/api/test/1?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -54,7 +52,7 @@ test testNocacheServices {
     .set("method", "PUT")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test/2", options);
+  res := fetch("/mainappfile/api/test/2", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -68,7 +66,7 @@ test testNocacheServices {
     .set("method", "GET")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test/2?nocache", options);
+  res := fetch("/mainappfile/api/test/2?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -80,14 +78,12 @@ test testNocacheServices {
 }
 
 test testServiceMethods {
-  var d : WebDriver := getFirefoxDriver();
-
   // GET
   var options := FetchOptions()
     .set("method", "GET")
     .addHeader("Content-Type", "application/json");
 
-  var res := fetch(d, "/mainappfile/api/test", options);
+  var res := fetch("/mainappfile/api/test", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -101,7 +97,7 @@ test testServiceMethods {
     .set("method", "GET")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test/somevalue", options);
+  res := fetch("/mainappfile/api/test/somevalue", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -120,7 +116,7 @@ test testServiceMethods {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test/42", options);
+  res := fetch("/mainappfile/api/test/42", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -134,7 +130,7 @@ test testServiceMethods {
     .set("method", "PUT")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test?nocache", options);
+  res := fetch("/mainappfile/api/test?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -148,7 +144,7 @@ test testServiceMethods {
     .set("method", "PUT")
     .addHeader("Content-Type", "application/json");
 
-  res := fetch(d, "/mainappfile/api/test/somevalue?nocache", options);
+  res := fetch("/mainappfile/api/test/somevalue?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -163,7 +159,7 @@ test testServiceMethods {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test?nocache", options);
+  res := fetch("/mainappfile/api/test?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -178,7 +174,7 @@ test testServiceMethods {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test/somevalue?nocache", options);
+  res := fetch("/mainappfile/api/test/somevalue?nocache", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -194,7 +190,7 @@ test testServiceMethods {
     .addHeader("Content-Type", "application/json")
     .set("body", body.toString());
 
-  res := fetch(d, "/mainappfile/api/test", options);
+  res := fetch("/mainappfile/api/test", options);
 
   assert(res.getState() == "fulfilled");
   assert(res.getStatus() == 200);
@@ -220,20 +216,18 @@ service testReturnService(condition1: String, condition2: String){
 }
 
 test testServiceMethods {
-  var d : WebDriver := getFirefoxDriver();
-
   // no arg
-  assert(fetch(d, "/mainappfile/api/testReturn").getBody() == "//0");
+  assert(fetch("/mainappfile/api/testReturn").getBody() == "//0");
 
   // one arg
-  assert(fetch(d, "/mainappfile/api/testReturn/false").getBody() == "false//0");
-  assert(fetch(d, "/mainappfile/api/testReturn/true").getBody() == "true//1");
+  assert(fetch("/mainappfile/api/testReturn/false").getBody() == "false//0");
+  assert(fetch("/mainappfile/api/testReturn/true").getBody() == "true//1");
 
   // both args
-  assert(fetch(d, "/mainappfile/api/testReturn/false/false").getBody() == "false/false/0");
-  assert(fetch(d, "/mainappfile/api/testReturn/false/true").getBody() == "false/true/2");
-  assert(fetch(d, "/mainappfile/api/testReturn/true/false").getBody() == "true/false/1");
-  assert(fetch(d, "/mainappfile/api/testReturn/true/true").getBody() == "true/true/1+2");
+  assert(fetch("/mainappfile/api/testReturn/false/false").getBody() == "false/false/0");
+  assert(fetch("/mainappfile/api/testReturn/false/true").getBody() == "false/true/2");
+  assert(fetch("/mainappfile/api/testReturn/true/false").getBody() == "true/false/1");
+  assert(fetch("/mainappfile/api/testReturn/true/true").getBody() == "true/true/1+2");
 }
 
 /// Reroutes API requests to the corresponding service.
